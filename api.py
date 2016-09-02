@@ -23,7 +23,7 @@ class dbo(object):
 
   def connect(self):
     if self.db_name == 'default':
-       self.cursor = connection().cursor()
+       self.cursor = connection.cursor()
     else:
        self.cursor = connections[self.db_name].cursor()
 
