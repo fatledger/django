@@ -1,4 +1,6 @@
 from django.db import connection, connections
+import json
+from decimal import Decimal
 
 db_schemas = {
   'user' : 'db1',
@@ -13,6 +15,13 @@ def dbName(schema):
     return db_schemas[schema]
   else:
     return None
+
+class MyJSONEncoder(json.JSONEncoder):
+  def default(self, obj):
+      """ convert Decimal to str """
+      if isinstance(obj, Decimal):
+        obj = str(obj)
+      return obj
 
 class dbo(object):
   """Establishes DB connection, run query, and return resultset"""
@@ -38,10 +47,12 @@ class dbo(object):
     #       dict(zip(cols, row))
     #       for row in cursor.fetchall()
     #   ] 
-    return [
+    self.dictobj= [
           dict(zip(cols, row))
           for row in self.cursor.fetchall()
       ] 
+
+    return json.dumps(self.dictobj, cls=MyJSONEncoder)
 
   def close(self):
     self.cursor.close()
