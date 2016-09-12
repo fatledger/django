@@ -1,6 +1,6 @@
 from apps.db.api import *
 
-s=dbo('user')
+s=dbObj('user')
 s.connect()
 sqltext="select id,upc,title from catalogue_product where id=1"
 fs=s.query(sqltext)
@@ -8,20 +8,27 @@ print(fs)
 s.close()
 exit()
 
+# query_filter = {'shape': ['RD', 'PR', 'OV'], \
+#   'cut': ['Ideal', 'Very Good', 'Good'], \ 
+#   'clarity': ['IF', 'VS1', 'VS2'], \
+#   'color': ['D', 'E'], \
+#   'carat_min': 0.5, \
+#   'carat_max': 3.5, \
+#   'price_min': 250.99, \
+#   'price_max': 8300.99}
+
 query_filter = {'shape': ['RD', 'PR', 'OV'], \
-  'cut': ['Ideal', 'Good'], \ 
-  'clarity': ['IF', 'VSI', 'VVSI'], \
+  'cut': ['Ideal', 'Very Good', 'Good'], \ 
+  'clarity': ['IF', 'VS1', 'VS2'], \
   'color': ['D', 'E'], \
   'carat_min': 0.5, \
-  'carat_max': 3.5, \
-  'price_min': 250.99, \
-  'price_max': 8300.99}
+  'carat_max': 3.5}
 
 import simplejson as json
 
 json_filter=json.dumps(query_filter)
 
-search_query="""select sku,shape,cut,color,clarity,carat,price,polish from app.diamond
+search_query="""select sku,shape,cut,color,clarity,carat,polish from app.diamond
  where 1=1"""
 
 query_filter = json.loads(json_filter)
