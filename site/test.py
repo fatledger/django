@@ -2,12 +2,11 @@ from apps.db.api import *
 
 s=dbObj('user')
 s.connect()
-sqltext="select id,upc,title from catalogue_product where id=1"
-fs=s.query(sqltext)
-print(fs)
-s.close()
-exit()
-
+# sqltext="select id,upc,title from catalogue_product where id=1"
+# fs=s.query(sqltext)
+# print(fs)
+# s.close()
+# exit()
 # query_filter = {'shape': ['RD', 'PR', 'OV'], \
 #   'cut': ['Ideal', 'Very Good', 'Good'], \ 
 #   'clarity': ['IF', 'VS1', 'VS2'], \
@@ -23,6 +22,12 @@ query_filter = {'shape': ['RD', 'PR', 'OV'], \
   'color': ['D', 'E'], \
   'carat_min': 0.5, \
   'carat_max': 3.5}
+s.build_sql(query_filter)
+s.print_sql()
+s.run()
+json_out=s.resultset()
+print(json_out)
+
 
 import simplejson as json
 

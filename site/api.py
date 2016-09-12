@@ -34,8 +34,7 @@ class dbObj(object):
     self.filter_clause=None
     self.json_obj = None
     self.dict_obj = None
-    self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond
- where 1=1"""
+    self.sql_text = "select current_database() db_name"  # default query if custom query is not provided
 
   def connect(self):
     if self.db_name == 'default':
@@ -44,6 +43,42 @@ class dbObj(object):
        self.cursor = connections[self.db_name].cursor()
 
   def build_sql(self, filter_obj):
+    pass
+
+  def print_sql(self):
+    print(self.sql_text)
+
+  def run(self):
+    self.cursor.execute(self.sql_text)
+
+    # retrieve column names
+    cols=[col[0] for col in self.cursor.description]
+
+    # build multi-dimensional dictionary for resultset
+    # self.resultset= [
+    #       dict(zip(cols, row))
+    #       for row in cursor.fetchall()
+    #   ] 
+    self.dict_obj= [
+          dict(zip(cols, row))
+          for row in self.cursor.fetchall()
+      ] 
+
+    # return json.dumps(self.dictobj, cls=MyJSONEncoder)
+    self.json_obj = json.dumps(self.dict_obj)
+
+  def resultset(self):
+    return self.json_obj
+
+  def close(self):
+    self.cursor.close()
+
+
+class search(dbObj):
+  def build_sql(self, filter_obj):
+
+    self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond where 1=1"""
+
     for key in filter_obj.keys():
       if key == 'shape':
          self.shape_list = filter(None, filter_obj['shape'])
@@ -86,30 +121,3 @@ class dbObj(object):
            self.filter_clause=" and price <= %d" % self.price_max
            self.sql_text += self.filter_clause     
 
-  def print_sql(self):
-    print(self.sql_text)
-
-  def run(self):
-    self.cursor.execute(self.sql_text)
-
-    # retrieve column names
-    cols=[col[0] for col in self.cursor.description]
-
-    # build multi-dimensional dictionary for resultset
-    # self.resultset= [
-    #       dict(zip(cols, row))
-    #       for row in cursor.fetchall()
-    #   ] 
-    self.dict_obj= [
-          dict(zip(cols, row))
-          for row in self.cursor.fetchall()
-      ] 
-
-    # return json.dumps(self.dictobj, cls=MyJSONEncoder)
-    self.json_obj = json.dumps(self.dict_obj)
-
-  def resultset(self):
-    return self.json_obj
-
-  def close(self):
-    self.cursor.close()
