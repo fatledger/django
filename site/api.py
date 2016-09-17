@@ -79,45 +79,31 @@ class search(dbObj):
 
     self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond where 1=1"""
 
-    for key in filter_obj.keys():
-      if key == 'shape':
-         self.shape_list = filter(None, filter_obj['shape'])
-         if len(self.shape_list) > 0:
-           self.filter_clause=" and shape in ('%s')" % "','".join(self.shape_list)
-           self.sql_text += self.filter_clause
-      elif key == 'cut':
-         self.cut_list = filter(None, filter_obj['cut'])
-         if len(self.cut_list) > 0:
-           self.filter_clause=" and cut in ('%s')" % "','".join(self.cut_list)
-           self.sql_text += self.filter_clause
-      elif key == 'color':
-         self.color_list = filter(None, filter_obj['color'])
-         if len(self.color_list) > 0:
-           self.filter_clause=" and color in ('%s')" % "','".join(self.color_list)
-           self.sql_text += self.filter_clause
-      elif key == 'clarity':
-         self.clarity_list = filter(None, filter_obj['clarity'])
-         if len(self.clarity_list) > 0:
-           self.filter_clause=" and clarity in ('%s')" % "','".join(self.clarity_list)
-           self.sql_text += self.filter_clause
-      elif key == 'carat_min':
-         self.carat_min = filter_obj['carat_min']
-         if self.carat_min is not None:
-           self.filter_clause=" and carat >= %d" % self.carat_min
-           self.sql_text += self.filter_clause
-      elif key == 'carat_max':
-         self.carat_max = filter_obj['carat_max']
-         if self.carat_max is not None:
-           self.filter_clause=" and carat <= %d" % self.carat_max
-           self.sql_text += self.filter_clause
-      elif key == 'price_min':
-         self.price_min = filter_obj['price_min']
-         if self.price_min is not None:
-           self.filter_clause=" and price >= %d" % self.price_min
-           self.sql_text += self.filter_clause
-      elif key == 'price_max':
-         self.price_max = filter_obj['price_max'] 
-         if self.price_max is not None:
-           self.filter_clause=" and price <= %d" % self.price_max
-           self.sql_text += self.filter_clause     
+    if filter_obj['filter'] is not None:
+      for key in filter_obj['filter'].keys():
+        if key in ('shape','cut','color','clarity'):
+           self.inlist = filter(None, filter_obj['filter'][key])
+           if len(self.inlist) > 0:
+             self.filter_clause=" and %s in ('%s')" % (key, "','".join(self.inlist))
+             self.sql_text += self.filter_clause
+        elif key == 'carat_min':
+           self.carat_min = filter_obj['filter'][key]
+           if self.carat_min is not None:
+             self.filter_clause=" and carat >= %d" % self.carat_min
+             self.sql_text += self.filter_clause
+        elif key == 'carat_max':
+           self.carat_max = filter_obj['filter'][key]
+           if self.carat_max is not None:
+             self.filter_clause=" and carat <= %d" % self.carat_max
+             self.sql_text += self.filter_clause
+        elif key == 'price_min':
+           self.price_min = filter_obj['filter'][key]
+           if self.price_min is not None:
+             self.filter_clause=" and price >= %d" % self.price_min
+             self.sql_text += self.filter_clause
+        elif key == 'price_max':
+           self.price_max = filter_obj['filter'][key]
+           if self.price_max is not None:
+             self.filter_clause=" and price <= %d" % self.price_max
+             self.sql_text += self.filter_clause     
 

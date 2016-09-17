@@ -1,6 +1,7 @@
 from apps.db.api import *
 
-s=dbObj('user')
+# s=dbObj('user')
+s=search('search')
 s.connect()
 # sqltext="select id,upc,title from catalogue_product where id=1"
 # fs=s.query(sqltext)
@@ -16,12 +17,16 @@ s.connect()
 #   'price_min': 250.99, \
 #   'price_max': 8300.99}
 
-query_filter = {'shape': ['RD', 'PR', 'OV'], \
-  'cut': ['Ideal', 'Very Good', 'Good'], \ 
-  'clarity': ['IF', 'VS1', 'VS2'], \
-  'color': ['D', 'E'], \
-  'carat_min': 0.5, \
-  'carat_max': 3.5}
+query_filter = { \
+'filter': {'shape': ['RD', 'PR', 'OV'], \
+'cut': ['Ideal', 'Very Good', 'Good'], \ 
+'clarity': ['IF', 'VS1', 'VS2'], \
+'color': ['D', 'E'], \
+'carat_min': 0.5, \
+'carat_max': 3.5}, \
+"limit": {"low":1, "high":5}, \
+"sort_by": ("shape", "color", "clarity", "cut", "carat") \
+}
 s.build_sql(query_filter)
 s.print_sql()
 s.run()
