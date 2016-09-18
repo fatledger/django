@@ -27,3 +27,15 @@ json_out=s.resultset()
 print(json_out)
 dict_out=s.dict_resultset()
 print(dict_out)
+
+s.close()
+
+s=diamond_detail('search')
+s.connect()
+s.build_sql('LD00122415')
+s.run()
+
+json_out=s.resultset()
+print(json_out)
+dict_out=s.dict_resultset()
+print(dict_out)

@@ -88,7 +88,6 @@ class search(dbObj):
   def build_sql(self, filter_obj):
 
     self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond where 1=1"""
-    self.sql_clause = ''
 
     if filter_obj['filter'] is not None:
       for key in filter_obj['filter'].keys():
@@ -126,3 +125,9 @@ class search(dbObj):
         elif key == 'limit':
           self.offset = filter_obj['page'][key]
           self.sql_text += ' limit %d' % self.offset
+
+class diamond_detail(dbObj):
+  def build_sql(self, sku):
+    self.sql_text = """select sku,shape,cut,color,clarity,carat,polish,symmetry, cert_id,cert_lab
+from app.diamond where sku='%s'""" % sku
+
