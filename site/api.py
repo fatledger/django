@@ -55,20 +55,30 @@ class dbObj(object):
     cols=[col[0] for col in self.cursor.description]
 
     # build multi-dimensional dictionary for resultset
+    self.returnObj = {'error':None}
+
+    # (doesn't work) self.rset = self.cursor.dictfetchall()
+
+    # build query resultset
     # self.resultset= [
     #       dict(zip(cols, row))
     #       for row in cursor.fetchall()
     #   ] 
-    self.dict_obj= [
+    self.rset = [
           dict(zip(cols, row))
           for row in self.cursor.fetchall()
       ] 
 
+    self.returnObj.update({'result':self.rset})
+
     # return json.dumps(self.dictobj, cls=MyJSONEncoder)
-    self.json_obj = json.dumps(self.dict_obj)
+    self.json_obj = json.dumps(self.returnObj)
 
   def resultset(self):
     return self.json_obj
+
+  def dict_resultset(self):
+    return self.returnObj
 
   def close(self):
     self.cursor.close()
@@ -78,6 +88,7 @@ class search(dbObj):
   def build_sql(self, filter_obj):
 
     self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond where 1=1"""
+    self.sql_clause = ''
 
     if filter_obj['filter'] is not None:
       for key in filter_obj['filter'].keys():
@@ -107,3 +118,11 @@ class search(dbObj):
              self.filter_clause=" and price <= %d" % self.price_max
              self.sql_text += self.filter_clause     
 
+    if filter_obj['page'] is not None:
+      for key in filter_obj['page'].keys():
+        if key == 'offset':
+          self.offset = filter_obj['page'][key]
+          self.sql_text += ' offset %d' % self.offset
+        elif key == 'limit':
+          self.offset = filter_obj['page'][key]
+          self.sql_text += ' limit %d' % self.offset

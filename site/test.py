@@ -24,15 +24,16 @@ query_filter = { \
 'color': ['D', 'E'], \
 'carat_min': 0.5, \
 'carat_max': 3.5}, \
-"limit": {"low":1, "high":5}, \
-"sort_by": ("shape", "color", "clarity", "cut", "carat") \
+'page': {'offset':1, 'limit':5}, \
+'sort_by': ('shape', 'color', 'clarity', 'cut', 'carat') \
 }
 s.build_sql(query_filter)
 s.print_sql()
 s.run()
 json_out=s.resultset()
 print(json_out)
-
+dict_out=s.dict_resultset()
+print(dict_out)
 
 import simplejson as json
 
