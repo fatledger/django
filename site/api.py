@@ -84,7 +84,7 @@ class dbObj(object):
     self.cursor.close()
 
 
-class search(dbObj):
+class diamondSearch(dbObj):
   def build_sql(self, filter_obj):
 
     self.sql_text = """select sku,shape,cut,color,clarity,carat,polish from app.diamond where 1=1"""
@@ -126,8 +126,39 @@ class search(dbObj):
           self.offset = filter_obj['page'][key]
           self.sql_text += ' limit %d' % self.offset
 
+
 class diamond_detail(dbObj):
   def build_sql(self, sku):
     self.sql_text = """select sku,shape,cut,color,clarity,carat,polish,symmetry, cert_id,cert_lab
 from app.diamond where sku='%s'""" % sku
 
+
+class productSearch(dbObj):
+  def build_sql(self, filter_obj):
+
+    self.sql_text = """select a.sku,a.product_type,a.internal_name,c.metal_name,c.metal_purity
+from app.product a, app.product_metal_content b, app.metal_content c
+where a.sku=b.sku and b.metal_content_id=c.metal_content_id"""
+
+    if filter_obj['filter'] is not None:
+      for key in filter_obj['filter'].keys():
+        if key in ('metal_name','metal_purity'):
+           self.filter_value = filter_obj['filter'][key]
+           if self.filter_value is not None:
+             self.filter_clause=" and c.%s = '%s'" % (key, self.filter_value)
+             self.sql_text += self.filter_clause
+
+    if filter_obj['page'] is not None:
+      for key in filter_obj['page'].keys():
+        if key == 'offset':
+          self.offset = filter_obj['page'][key]
+          self.sql_text += ' offset %d' % self.offset
+        elif key == 'limit':
+          self.offset = filter_obj['page'][key]
+          self.sql_text += ' limit %d' % self.offset
+
+class product_detail(dbObj):
+  def build_sql(self, sku):
+    self.sql_text = """select a.sku,a.product_type,a.internal_name,c.metal_name,c.metal_purity
+from app.product a, app.product_metal_content b, app.metal_content c
+where a.sku=b.sku and b.metal_content_id=c.metal_content_id and a.sku='%s'""" % sku

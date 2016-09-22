@@ -39,3 +39,36 @@ json_out=s.resultset()
 print(json_out)
 dict_out=s.dict_resultset()
 print(dict_out)
+
+query_obj = { \
+'filter': {'metal_name': 'Gold', 'metal_purity': '18k'}, \
+'page': {'offset':1, 'limit':5} \
+}
+
+s=productSearch('search')
+s.connect()
+
+s.build_sql(query_obj)
+s.print_sql()
+s.run()
+
+json_out=s.resultset()
+print(json_out)
+dict_out=s.dict_resultset()
+print(dict_out)
+
+s.close()
+
+s=product_detail('search')
+s.connect()
+s.build_sql('PR00000300')
+s.print_sql()
+s.run()
+
+json_out=s.resultset()
+print(json_out)
+dict_out=s.dict_resultset()
+print(dict_out)
+
+s.close()
+
