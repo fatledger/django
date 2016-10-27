@@ -1,4 +1,4 @@
-python manager.py shell
+python manage.py shell
 
 ====
 # import simplejson as json
@@ -72,3 +72,10 @@ print(dict_out)
 
 s.close()
 
+
+
+from apps.db.api import *
+from apps.db import models
+from apps.db.models import Diamond
+p=Diamond.objects.get(sku='LD00122398')
+print(p.sku)
