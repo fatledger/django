@@ -1,0 +1,2 @@
+alter role app_user set search_path to app,public;
+grant usage on schema app to app_user;
